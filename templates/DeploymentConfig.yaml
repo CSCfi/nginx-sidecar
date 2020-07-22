@@ -1,0 +1,58 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: python-and-sidecar
+  name: python-and-sidecar
+spec:
+  replicas: 1
+  selector:
+    app: python-and-sidecar
+    deploymentconfig: python-and-sidecar
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: python-and-sidecar
+        deploymentconfig: python-and-sidecar
+    spec:
+      containers:
+      - image: lvarin/nginx-sidecar:latest
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - image: lvarin/hello-world-opensift:latest
+        imagePullPolicy: Always
+        name: python
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1500m
+            memory: 7Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
