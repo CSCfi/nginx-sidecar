@@ -26,7 +26,7 @@ spec:
         deploymentconfig: python-and-sidecar
     spec:
       containers:
-      - image: lvarin/nginx-sidecar:latest
+      - image: cscfi/nginx-sidecar:latest
         imagePullPolicy: Always
         name: nginx
         ports:
@@ -38,7 +38,7 @@ spec:
             memory: 1Gi
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-      - image: lvarin/hello-world-opensift:latest
+      - image: cscfi/hello-world-opensift:latest
         imagePullPolicy: Always
         name: python
         ports:
