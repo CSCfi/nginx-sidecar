@@ -1,5 +1,5 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app: python-and-sidecar
@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: 1
   selector:
-    app: python-and-sidecar
-    deploymentconfig: python-and-sidecar
+    matchLabels:
+      app: python-and-sidecar
   strategy:
     activeDeadlineSeconds: 21600
     resources: {}
@@ -18,7 +18,7 @@ spec:
       maxUnavailable: 25%
       timeoutSeconds: 600
       updatePeriodSeconds: 1
-    type: Rolling
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -26,7 +26,7 @@ spec:
         deploymentconfig: python-and-sidecar
     spec:
       containers:
-      - image: cscfi/nginx-sidecar:latest
+      - image: docker.io/cscfi/nginx-sidecar:latest
         imagePullPolicy: Always
         name: nginx
         ports:
